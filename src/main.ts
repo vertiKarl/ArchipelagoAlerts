@@ -29,7 +29,7 @@ window.onload = async () => {
     ) return;
 
     try {
-      const res = await client.login(`${data.host}:${data.port}`, data.slot)
+      await client.login(`${data.host}:${data.port}`, data.slot)
       const prevErr = app?.querySelector("#error");
       if(prevErr) {
         prevErr.parentNode?.removeChild(prevErr);
@@ -90,7 +90,7 @@ window.onload = async () => {
       const apsettings: AP_SETTINGS = JSON.parse(localStorage.archipelago);
       try {
         console.log("Trying to connect to archipelago with existing credentials")
-        const res = await client.login(`${apsettings.host}:${apsettings.port}`, apsettings.slot);
+        await client.login(`${apsettings.host}:${apsettings.port}`, apsettings.slot);
       } catch (err) {
         console.error(err);
       }
@@ -124,34 +124,24 @@ client.socket.on("connected", () => {
   audio.id = "audio";
   app.appendChild(audio);
 
-  let alertTimeout: number | null;
-
   client.items.on("itemsReceived", (items, index) => {
-    // if(index <= 0 || items.length <= 0) return;
-    // const item = items[0];
-    // console.log("item received:", item.name);
-    // itemReceiveQueue.push(item);
-    // if(!alertTimeout) {
-    //   sendAlert();
-    // }
-
     if(index != 0) {
-      console.log(items.map((item, index) => { return item.name}))
       for(const item of items) {
         const alert: Alert = {type: "AlertItem", payload: item};
         alertQueue.push(alert);
       }
-      if(!alertTimeout) {
-        sendAlert();
-      }
+      sendAlert();
     }
   });
 
-  client.messages.on("goaled", (text, player, _nodes) => {
+  client.messages.on("goaled", (_text, player, _nodes) => {
     const alert: Alert = {
       type: 'AlertGoal',
       payload: player
     }
+
+    alertQueue.push(alert);
+    sendAlert();
   })
 
   let isAnimating = false;
@@ -165,7 +155,6 @@ client.socket.on("connected", () => {
     const text = app.querySelector("#text") as HTMLHeadingElement;
     
     const alert = alertQueue.pop()[0];
-    alertTimeout = null;
     if(!alert) {
       return;
     };
@@ -226,7 +215,7 @@ client.socket.on("connected", () => {
 
 
     console.log("start timeout")
-    alertTimeout = setTimeout(() => {
+    setTimeout(() => {
       isAnimating = false;
       sendAlert();
     }, timeout);
