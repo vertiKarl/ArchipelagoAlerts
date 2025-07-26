@@ -127,7 +127,12 @@ client.socket.on("connected", () => {
   client.items.on("itemsReceived", (items, index) => {
     if(index != 0) {
       for(const item of items) {
-        const alert: Alert = {type: "AlertItem", payload: item};
+        let alert: Alert;
+        if(!item.trap) {
+          alert = {type: "AlertItem", payload: item};
+        } else {
+          alert = {type: "AlertTrap", payload: item};
+        }
         alertQueue.push(alert);
       }
       sendAlert();
@@ -138,6 +143,20 @@ client.socket.on("connected", () => {
     const alert: Alert = {
       type: 'AlertGoal',
       payload: player
+    }
+
+    alertQueue.push(alert);
+    sendAlert();
+  })
+
+  client.deathLink.on("deathReceived", (source, time, cause) => {
+    const alert: Alert = {
+      type: 'AlertDeath',
+      payload: {
+        source,
+        time,
+        cause
+      }
     }
 
     alertQueue.push(alert);
@@ -160,7 +179,7 @@ client.socket.on("connected", () => {
     };
 
     isAnimating = true;
-    let timeout = 2500;
+    let timeout = 4000;
 
     app.classList.remove("hide");
     app.classList.remove("hide-long");
@@ -187,6 +206,28 @@ client.socket.on("connected", () => {
 
           if(sound) audio!.play()
           app.classList.add("hide");
+          timeout = item.progression ? 4000 : 2500;
+          break;
+        }
+      case "AlertTrap":
+        {
+          const trap = (alert.payload as Item) || {
+            name: "TestTrap",
+            sender: {
+              name: "TestSender"
+            }
+          } as Item;
+          const trapImages = images.trapReceived;
+          const image = trapImages[Math.floor(Math.random() * trapImages.length)];
+          const trapSounds = sfx.trapReceived;
+          const sound = trapSounds[Math.floor(Math.random() * trapSounds.length)];
+
+          img!.src = image;
+          text!.innerHTML = `Received <trap>${trap.name}</item> from <player style="color: hsl(${stringToHue(trap.sender.name)}, 80%, 50%);">${trap.sender.name}</player>`
+          audio!.src = sound;
+
+          if(sound) audio!.play()
+          app.classList.add("hide");
           break;
         }
       case 'AlertGoal':
@@ -204,8 +245,35 @@ client.socket.on("connected", () => {
           audio!.src = sound;
 
           if(sound) audio!.play()
+          break;
+        }
+      case "AlertDeath":
+        {
+          interface Death {
+            source: string,
+            time: number,
+            reason: string
+          }
+          const death: Death = alert.payload || {source: "TestPlayer", time: 0, reason: "TestAlert"};
+          const deathImages = images.deathlink;
+          const image = deathImages[Math.floor(Math.random() * deathImages.length)];
+          const deathSounds = sfx.deathlink;
+          const sound = deathSounds[Math.floor(Math.random() * deathSounds.length)];
+
+          img!.src = image;
+          text!.innerHTML = `<player style="hsl(${stringToHue(death.source)}, 80%, 50%")>${death.source}</player> <death>died</death> because of <reason>${death.reason}</reason>!`
+          app.classList.add("hide-long");
+
+          audio!.src = sound;
+
+          if(sound) audio!.play()
 
           timeout = 10000;
+          break;
+        }
+      default:
+        {
+          console.error("Event", alert.type, "not implemented!");
           break;
         }
     }
