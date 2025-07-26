@@ -36,6 +36,7 @@ window.onload = async () => {
       }
 
       localStorage.archipelago = JSON.stringify(data);
+      location.reload();
     }
     catch (err) {
       console.error(err)
