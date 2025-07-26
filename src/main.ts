@@ -15,7 +15,29 @@ interface AP_SETTINGS {
   password?: string
 }
 
+function deleteStorage() {
+    console.log("deleting storage")
+    delete localStorage.archipelago;
+}
+
 window.onload = async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const shouldDelete = urlParams.get('delete');
+
+  if(shouldDelete !== null) {
+    deleteStorage();
+    window.location.href = window.location.href.split("?")[0];
+    location.reload();
+  }
+
+
+  document.onkeyup = (ev) => {
+    // doesn't work in obs for some reason
+    if(ev.ctrlKey && ev.code === 'KeyC') {
+      deleteStorage();
+      location.reload();
+    }
+  }
 
   async function saveArchipelagoSettings(data: AP_SETTINGS) {
     const form = document.querySelector('#apsettings');
@@ -284,6 +306,14 @@ client.socket.on("connected", () => {
           timeout = 10000;
           break;
         }
+      case "AlertMeta":
+        {
+          const info = alert.payload;
+          text!.innerHTML = info;
+          app.classList.add("hide");
+
+          break;
+        }
       default:
         {
           console.error("Event", alert.type, "not implemented!");
@@ -301,4 +331,14 @@ client.socket.on("connected", () => {
       sendAlert();
     }, timeout);
   }
+
+
+
+  const connectedAlert: Alert = {
+    type: "AlertMeta",
+    payload: "Successfully connected to archipelago!"
+  }
+
+  alertQueue.push(connectedAlert);
+  sendAlert();
 })

@@ -1,4 +1,4 @@
-export type AlertType = "AlertItem" | "AlertTrap" | "AlertGoal" | "AlertDeath";
+export type AlertType = "AlertMeta" | "AlertItem" | "AlertTrap" | "AlertGoal" | "AlertDeath";
 
 
 export interface Alert {
