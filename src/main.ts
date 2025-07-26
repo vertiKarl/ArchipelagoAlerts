@@ -163,6 +163,18 @@ client.socket.on("connected", () => {
     sendAlert();
   })
 
+  client.items.on("hintReceived", (_hint) => {
+    // stub
+  })
+
+  client.items.on("hintFound", (_hint) => {
+    // stub
+  })
+
+  client.messages.on("itemCheated", (_text, _item, _nodes) => {
+    // stub
+  })
+
   let isAnimating = false;
 
 
