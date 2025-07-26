@@ -51,7 +51,9 @@ window.onload = async () => {
     ) return;
 
     try {
-      await client.login(`${data.host}:${data.port}`, data.slot)
+      await client.login(`${data.host}:${data.port}`, data.slot, undefined, {
+        password: data.password
+      })
       const prevErr = app?.querySelector("#error");
       if(prevErr) {
         prevErr.parentNode?.removeChild(prevErr);
@@ -113,7 +115,9 @@ window.onload = async () => {
       const apsettings: AP_SETTINGS = JSON.parse(localStorage.archipelago);
       try {
         console.log("Trying to connect to archipelago with existing credentials")
-        await client.login(`${apsettings.host}:${apsettings.port}`, apsettings.slot);
+        await client.login(`${apsettings.host}:${apsettings.port}`, apsettings.slot, undefined, {
+          password: apsettings.password
+        });
       } catch (err) {
         console.error(err);
       }
