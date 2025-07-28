@@ -50,6 +50,11 @@ reason {
   color: orange;
 }
 
+form {
+  display: flex;
+  flex-direction: column;
+}
+
 @keyframes fadeOut {
   0% {
     opacity: 0;

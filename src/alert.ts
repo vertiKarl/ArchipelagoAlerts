@@ -2,6 +2,7 @@ export type AlertType = "AlertMeta" | "AlertItem" | "AlertTrap" | "AlertGoal" | 
 
 
 export interface Alert {
+    slot: string,
     type: AlertType,
     payload: any
 }

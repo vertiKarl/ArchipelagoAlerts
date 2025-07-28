@@ -1,5 +1,6 @@
 
 export function stringToHue(str: string) {
+  if(typeof str !== "string") return;
     let num = 0;
     let i = 0;
     for(const char of str.split("")) {
