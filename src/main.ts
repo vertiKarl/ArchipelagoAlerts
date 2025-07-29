@@ -1,11 +1,11 @@
 import "./style.css";
-import type { AlertType } from "./alert";
-import { NameToBeDetermined } from "./Archipelago";
+import type { AlertType } from "./Alert";
+import { ConnectionHandler } from "./ConnectionHandler";
 
 const app = document.querySelector("#app") as HTMLElement;
 
 // Sample URL
-// [base]/?host=archipelago.gg&port=69696&slots=Karl,Karl2
+// [base]/?host=archipelago.gg&port=69696&slots=Karl,Karl2&password=
 
 window.onload = async () => {
   const urlParams = new URLSearchParams(window.location.search);
@@ -101,7 +101,7 @@ window.onload = async () => {
       window.location.href = window.location.href.split("?")[0] + "?invalid";
       return;
     } else {
-      const handler = new NameToBeDetermined(
+      const handler = new ConnectionHandler(
         host,
         port,
         slots.split(","),
