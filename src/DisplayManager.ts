@@ -79,7 +79,9 @@ export class DisplayManager {
         const sound = itemSounds[Math.floor(Math.random() * itemSounds.length)];
 
         img!.src = image;
-        text!.innerHTML = `${alert.slot} received <item class="${
+        text!.innerHTML = `<player style="color: hsl(${stringToHue(
+          alert.slot
+        )}, 80%, 50%);">${alert.slot}</player> received <item class="${
           item.progression ? "progression" : "item"
         }">${item.name}</item> from <player style="color: hsl(${stringToHue(
           item.sender.name
