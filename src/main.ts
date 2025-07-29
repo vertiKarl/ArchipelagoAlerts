@@ -37,6 +37,7 @@ window.onload = async () => {
     addSlot();
 
     const dSlotControl = document.createElement("div");
+    dSlotControl.id = "SlotControls";
 
     const bAddSlot = document.createElement("button");
     bAddSlot.innerText = "+";
@@ -50,14 +51,18 @@ window.onload = async () => {
     dSlotControl.appendChild(bAddSlot);
     dSlotControl.appendChild(bRemoveSlot);
 
+    const dSlotContainer = document.createElement("div");
+    dSlotContainer.id = "SlotContainer";
+    dSlotContainer.appendChild(dSlots);
+    dSlotContainer.appendChild(dSlotControl);
+
     const iPassword = document.createElement("input");
     iPassword.placeholder = "Password (optional)";
     const iSubmit = document.createElement("input");
     iSubmit.type = "submit";
     fApSetttings.appendChild(iHost);
     fApSetttings.appendChild(iPort);
-    fApSetttings.appendChild(dSlots);
-    fApSetttings.appendChild(dSlotControl);
+    fApSetttings.appendChild(dSlotContainer);
     fApSetttings.appendChild(iPassword);
     fApSetttings.appendChild(iSubmit);
 

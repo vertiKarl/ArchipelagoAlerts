@@ -52,6 +52,37 @@ reason {
 form {
   display: flex;
   flex-direction: column;
+  width: 70vw;
+}
+
+#SlotContainer {
+  display: flex;
+}
+
+#SlotContainer > * {
+}
+
+#slots {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+#SlotControls {
+  width: 4rem;
+  height: 2rem;
+  align-self: flex-end;
+}
+
+#SlotControls > * {
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  box-sizing: border-box;
+}
+
+#slots > * {
+  height: 1.6rem;
 }
 
 @keyframes fadeOut {
