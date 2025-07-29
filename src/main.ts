@@ -1,20 +1,20 @@
-import './style.css'
-import type { AlertType } from './alert';
-import { NameToBeDetermined } from './Archipelago';
+import "./style.css";
+import type { AlertType } from "./alert";
+import { NameToBeDetermined } from "./Archipelago";
 
-const app = document.querySelector('#app') as HTMLElement;
+const app = document.querySelector("#app") as HTMLElement;
 
 // Sample URL
 // [base]/?host=archipelago.gg&port=69696&slots=Karl,Karl2
 
 window.onload = async () => {
   const urlParams = new URLSearchParams(window.location.search);
-  if(urlParams.get("invalid") !== null || urlParams.size === 0) {
+  if (urlParams.get("invalid") !== null || urlParams.size === 0) {
     const fApSetttings = document.createElement("form");
     fApSetttings.id = "apsettings";
     const iHost = document.createElement("input");
     iHost.placeholder = "Host";
-    iHost.value = "archipelago.gg"
+    iHost.value = "archipelago.gg";
     const iPort = document.createElement("input");
     iPort.placeholder = "Port";
     iPort.type = "number";
@@ -31,13 +31,13 @@ window.onload = async () => {
 
     function removeSlot() {
       const childs = dSlots.children;
-      if(childs.length > 1) childs[childs.length-1].remove();
+      if (childs.length > 1) childs[childs.length - 1].remove();
     }
-    
+
     addSlot();
 
     const dSlotControl = document.createElement("div");
-    
+
     const bAddSlot = document.createElement("button");
     bAddSlot.innerText = "+";
     bAddSlot.type = "button";
@@ -47,10 +47,9 @@ window.onload = async () => {
     bRemoveSlot.type = "button";
     bRemoveSlot.onclick = removeSlot;
 
-
     dSlotControl.appendChild(bAddSlot);
     dSlotControl.appendChild(bRemoveSlot);
-    
+
     const iPassword = document.createElement("input");
     iPassword.placeholder = "Password (optional)";
     const iSubmit = document.createElement("input");
@@ -62,27 +61,30 @@ window.onload = async () => {
     fApSetttings.appendChild(iPassword);
     fApSetttings.appendChild(iSubmit);
 
-    fApSetttings.addEventListener('submit', function(event) {
+    fApSetttings.addEventListener("submit", function (event) {
       event.preventDefault();
-      window.location.href = window.location.href.split("?")[0] +
-      `?host=${iHost.value}` +
-      `&port=${Number(iPort.value)}` +
-      // this gets the value of all Slot input boxes
-      `&slots=${
-        ([...dSlots.children] as HTMLInputElement[]).map(function(input: HTMLInputElement) { return input.value})
-      }` +
-      `&password=${iPassword.value}`;
-    })
+      window.location.href =
+        window.location.href.split("?")[0] +
+        `?host=${iHost.value}` +
+        `&port=${Number(iPort.value)}` +
+        // this gets the value of all Slot input boxes
+        `&slots=${([...dSlots.children] as HTMLInputElement[]).map(function (
+          input: HTMLInputElement
+        ) {
+          return input.value;
+        })}` +
+        `&password=${iPassword.value}`;
+    });
 
-    app.innerHTML = '<h1>Connect to Archipelago</h1>';
+    app.innerHTML = "<h1>Connect to Archipelago</h1>";
     app.appendChild(fApSetttings);
   } else {
     const host = urlParams.get("host");
     const port = Number(urlParams.get("port"));
     const slots = urlParams.get("slots");
     const password = urlParams.get("password") || undefined;
-  
-    if(
+
+    if (
       !host ||
       host.length <= 0 ||
       !port ||
@@ -94,13 +96,17 @@ window.onload = async () => {
       window.location.href = window.location.href.split("?")[0] + "?invalid";
       return;
     } else {
-      const handler = new NameToBeDetermined(host, port, slots.split(","), password);
+      const handler = new NameToBeDetermined(
+        host,
+        port,
+        slots.split(","),
+        password
+      );
       // useful for testing
       // just run generateAlert("AlertItem") to view an example alert!
       (window as any).generateAlert = (type: AlertType) => {
-        handler.registerAlert({slot: "TestSlot", type, payload: ""});
-      }
+        handler.registerAlert({ slot: "TestSlot", type, payload: "" });
+      };
     }
   }
-}
-
+};

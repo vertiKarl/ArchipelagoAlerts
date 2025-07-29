@@ -13,7 +13,6 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-
 .progression {
   color: purple;
   font-weight: bold;
@@ -67,7 +66,7 @@ form {
   70% {
     opacity: 1;
   }
-  
+
   100% {
     opacity: 0;
   }
