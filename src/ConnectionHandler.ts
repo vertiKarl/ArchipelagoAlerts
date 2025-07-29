@@ -28,7 +28,6 @@ export class ConnectionHandler {
         await client.login(`${host}:${port}`, slot, undefined, {
           password: password || "", // for some reason the client does not connect when omitting the password field
         });
-        console.log("passed login");
         this.clients.set(slot, client);
       } catch (err) {
         console.error(err);
@@ -37,8 +36,6 @@ export class ConnectionHandler {
   }
 
   private hookEvents(client: Client) {
-    console.log("hooking events");
-
     client.socket.on("connected", () => {
       client.items.on("itemsReceived", (items, index) => {
         if (index != 0) {
@@ -93,6 +90,7 @@ export class ConnectionHandler {
       // without this timeout we run into a race condition
       // leading to a blank client.name
       setTimeout(() => {
+        console.log("Logged in as", client.name);
         const connectedAlert: Alert = {
           slot: client.name,
           type: "AlertMeta",

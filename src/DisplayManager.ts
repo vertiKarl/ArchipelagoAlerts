@@ -39,7 +39,6 @@ export class DisplayManager {
 
   private displayAlert() {
     if (this.isAnimating) return;
-    console.log("Next Alert");
     const app = document.querySelector("#app") as HTMLElement;
     if (!app) return;
     const img = app.querySelector("#visual") as HTMLImageElement;
@@ -127,9 +126,9 @@ export class DisplayManager {
         const sound = goalSounds[Math.floor(Math.random() * goalSounds.length)];
 
         img!.src = image;
-        text!.innerHTML = `<player style="hsl(${stringToHue(
+        text!.innerHTML = `<player style="color: hsl(${stringToHue(
           player.name
-        )}, 80%, 50%")>${
+        )}, 80%, 50%)">${
           player.name
         }</player> has completed their <goal>goal</goal>!`;
         app.classList.add("hide-long");
@@ -158,7 +157,7 @@ export class DisplayManager {
           deathSounds[Math.floor(Math.random() * deathSounds.length)];
 
         img!.src = image;
-        text!.innerHTML = `<player style="hsl(${stringToHue(
+        text!.innerHTML = `<player style="color: hsl(${stringToHue(
           death.source
         )}, 80%, 50%")>${
           death.source
@@ -191,8 +190,6 @@ export class DisplayManager {
     }
 
     app.classList.add("fade-in");
-
-    console.log("start timeout");
     setTimeout(() => {
       this.isAnimating = false;
       this.displayAlert();
