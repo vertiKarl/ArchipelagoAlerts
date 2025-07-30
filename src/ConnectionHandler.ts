@@ -150,7 +150,12 @@ export class ConnectionHandler {
    * @param skipQueue If the queue should be skipped or not (high priority)
    */
   public registerAlert(alert: Alert, skipQueue?: boolean) {
-    console.log("Registering", alert.type, "(Skipping queue:", skipQueue + ")");
+    console.log(
+      "Registering",
+      alert.type,
+      "(Skipping queue:",
+      (skipQueue ? "Yes" : "No") + ")"
+    );
     this.display.push(alert, skipQueue);
   }
 }
