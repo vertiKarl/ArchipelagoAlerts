@@ -106,7 +106,7 @@ export class ConnectionHandler {
       client.messages.on("countdown", (text, value, _nodes) => {
         // it's redundant to show the countdown alert twice
         // so we only respect it for one client
-        if (client.name !== this.clients.entries().next().value[0]) return;
+        if (client.name !== this.clients.entries().next().value?.[0]) return;
         if (text.endsWith("s")) {
           // this event gives us the length of the timer,
           // so we will lock the queue till this event is over.
