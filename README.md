@@ -1,7 +1,11 @@
+[![Deploy static content to Pages](https://github.com/vertiKarl/ArchipelagoAlerts/actions/workflows/deploy.yml/badge.svg)](https://github.com/vertiKarl/ArchipelagoAlerts/actions/workflows/deploy.yml)
+
 # An alerts page for Archipelago
 
 Just setup your archipelago connection and enjoy alerts!
 Customization is planned but is currently limited to local installs.
+
+![Alert Preview](https://i.imgur.com/YLIufrx.png)
 
 ## To setup in obs
 
@@ -9,6 +13,8 @@ Customization is planned but is currently limited to local installs.
 2. Add the generated URL as a browser source to obs. (you will be redirected)
 
 ## To setup locally
+
+This is needed to customize the alerts. (e.g. changing sounds, images or even changing the text!)
 
 ### Clone this repo
 
@@ -24,3 +30,9 @@ Use local test server: `yarn dev`
 Build: `yarn build`
 
 When building use your favorite static site server to host the files!
+
+### Customizing
+
+- To change sounds or images checkout /sources.json!
+- Alert text can be found in src/DisplayManager.ts
+  (Might add localization support at a later point in time moving text to a seperate file)
