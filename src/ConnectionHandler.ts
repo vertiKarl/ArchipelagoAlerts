@@ -6,10 +6,25 @@ export class ConnectionHandler {
   private clients: Map<string, Client> = new Map();
   private display = new DisplayManager();
 
+  /**
+   * A management class handling connecting to the archipelago instance,
+   * receiving events and sending them over to the DisplayManager.
+   * @param host The domain or ip adress of the archipelago instance
+   * @param port The port of the archipelago instance
+   * @param slots An array of slots to connect to
+   * @param password Optionally provide a password to the instance
+   */
   constructor(host: string, port: number, slots: string[], password?: string) {
     this.setupClients(host, port, slots, password);
   }
 
+  /**
+   * Initializes the clients map and opens the relevant connections.
+   * @param host The domain or ip adress of the archipelago instance
+   * @param port The port of the archipelago instance
+   * @param slots An array of slots to connect to
+   * @param password Optionally provide a password to the instance
+   */
   private async setupClients(
     host: string,
     port: number,
@@ -35,6 +50,10 @@ export class ConnectionHandler {
     }
   }
 
+  /**
+   * Adds eventlisteners to all relevant archipelago events
+   * @param client The client to hook the events from
+   */
   private hookEvents(client: Client) {
     client.socket.on("connected", () => {
       client.items.on("itemsReceived", (items, index) => {
@@ -75,16 +94,39 @@ export class ConnectionHandler {
         this.registerAlert(alert);
       });
 
-      client.items.on("hintReceived", (_hint) => {
-        // stub
+      client.items.on("hintReceived", (hint) => {
+        const alert: Alert = {
+          slot: client.name,
+          type: "AlertHint",
+          payload: hint,
+        };
+        this.registerAlert(alert);
       });
 
-      client.items.on("hintFound", (_hint) => {
-        // stub
-      });
-
-      client.messages.on("itemCheated", (_text, _item, _nodes) => {
-        // stub
+      client.messages.on("countdown", (text, value, _nodes) => {
+        // it's redundant to show the countdown alert twice
+        // so we only respect it for one client
+        if (client.name !== this.clients.entries().next().value[0]) return;
+        if (text.endsWith("s")) {
+          // this event gives us the length of the timer,
+          // so we will lock the queue till this event is over.
+          this.display.lockQueue();
+          setTimeout(() => {
+            // this is a failsafe if we never received the last countdown event
+            this.display.unlockQueue();
+          }, value * 1000);
+        } else {
+          console.log("Countdown:", value);
+          const alert: Alert = {
+            slot: client.name,
+            type: "AlertCountdown",
+            payload: value,
+          };
+          this.registerAlert(alert, true);
+          if (value === 0) {
+            this.display.unlockQueue();
+          }
+        }
       });
 
       // without this timeout we run into a race condition
@@ -102,8 +144,13 @@ export class ConnectionHandler {
     });
   }
 
-  public registerAlert(alert: Alert) {
-    console.log("registering alert");
-    this.display.push(alert);
+  /**
+   * Adds an alert to the displaymanager queue
+   * @param alert The Alert to be added
+   * @param skipQueue If the queue should be skipped or not (high priority)
+   */
+  public registerAlert(alert: Alert, skipQueue?: boolean) {
+    console.log("Registering", alert.type, "(Skipping queue:", skipQueue + ")");
+    this.display.push(alert, skipQueue);
   }
 }

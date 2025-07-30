@@ -27,9 +27,19 @@
   animation: fadeOut 2s ease-out forwards;
 }
 
+.hide-short {
+  opacity: 1;
+  animation: fadeOut 800ms ease-out forwards;
+}
+
 .hide-long {
   opacity: 1;
   animation: fadeOut 10s ease-out forwards;
+}
+
+timer {
+  font-weight: bold;
+  font-size: 6em;
 }
 
 img {
@@ -81,6 +91,10 @@ input {
   width: 2rem;
   height: 2rem;
   box-sizing: border-box;
+}
+
+.grayscale {
+  filter: saturate(0%);
 }
 
 @keyframes fadeOut {

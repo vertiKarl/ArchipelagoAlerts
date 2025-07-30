@@ -11,3 +11,9 @@ export function stringToHue(str: string) {
 
   return num;
 }
+
+export function pickRandom(arr: any[]) {
+  if (arr.length <= 0) return null;
+  const rng = Math.random() * arr.length;
+  return arr[Math.floor(rng)];
+}

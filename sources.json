@@ -1,22 +1,58 @@
 {
-    "images": {
-        "itemReceived": ["https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-48-916_512.gif"],
-        "trapReceived": ["https://cdn.pixabay.com/photo/2012/04/14/12/52/trap-33819_1280.png"],
-        "progressionItemReceived": ["https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-53-6_512.gif"],
-        "goalCompleted": ["https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-22-874_512.gif"],
-        "deathlink": ["https://cdn.pixabay.com/photo/2013/07/13/11/53/death-158909_1280.png"]
-    },
-    "sfx": {
-        "itemReceived": [
-            "https://cdn.pixabay.com/download/audio/2025/06/02/audio_f91dce208a.mp3?filename=new-notification-09-352705.mp3",
-            "https://cdn.pixabay.com/download/audio/2024/02/07/audio_a143337bbf.mp3?filename=collect-points-190037.mp3"
-        ],
-        "trapReceived": ["https://cdn.pixabay.com/download/audio/2023/01/19/audio_e3369a8a96.mp3?filename=dbd-bear-trap-being-disarmed-135902.mp3"],
-        "progressionItemReceived": ["https://cdn.pixabay.com/download/audio/2025/07/04/audio_9dcd152e4d.mp3?filename=new-notification-021-370045.mp3"],
-        "goalCompleted": [
-            "https://cdn.pixabay.com/download/audio/2022/01/18/audio_f981d1ac7d.mp3?filename=piglevelwin2mp3-14800.mp3",
-            "https://cdn.pixabay.com/download/audio/2022/10/16/audio_10bebc0b9f.mp3?filename=call-to-attention-123107.mp3"
-        ],
-        "deathlink": ["https://cdn.pixabay.com/download/audio/2022/03/10/audio_b73b7931ed.mp3?filename=videogame-death-sound-43894.mp3"]
-    }
+  "images": {
+    "itemReceived": [
+      "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-48-916_512.gif"
+    ],
+    "trapReceived": [
+      "https://cdn.pixabay.com/photo/2012/04/14/12/52/trap-33819_1280.png"
+    ],
+    "progressionItemReceived": [
+      "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-53-6_512.gif"
+    ],
+    "goalCompleted": [
+      "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-22-874_512.gif"
+    ],
+    "deathlink": [
+      "https://cdn.pixabay.com/photo/2013/07/13/11/53/death-158909_1280.png"
+    ],
+    "meta": [""],
+    "newHint": [
+      "https://cdn.pixabay.com/animation/2023/06/13/15/13/15-13-25-972_512.gif"
+    ],
+    "oldHint": [""],
+    "countdownTimer": [""],
+    "countdownGo": [""]
+  },
+  "sfx": {
+    "itemReceived": [
+      "https://cdn.pixabay.com/download/audio/2025/06/02/audio_f91dce208a.mp3?filename=new-notification-09-352705.mp3",
+      "https://cdn.pixabay.com/download/audio/2024/02/07/audio_a143337bbf.mp3?filename=collect-points-190037.mp3"
+    ],
+    "trapReceived": [
+      "https://cdn.pixabay.com/download/audio/2023/01/19/audio_e3369a8a96.mp3?filename=dbd-bear-trap-being-disarmed-135902.mp3"
+    ],
+    "progressionItemReceived": [
+      "https://cdn.pixabay.com/download/audio/2025/07/04/audio_9dcd152e4d.mp3?filename=new-notification-021-370045.mp3"
+    ],
+    "goalCompleted": [
+      "https://cdn.pixabay.com/download/audio/2022/01/18/audio_f981d1ac7d.mp3?filename=piglevelwin2mp3-14800.mp3",
+      "https://cdn.pixabay.com/download/audio/2022/10/16/audio_10bebc0b9f.mp3?filename=call-to-attention-123107.mp3"
+    ],
+    "deathlink": [
+      "https://cdn.pixabay.com/download/audio/2022/03/10/audio_b73b7931ed.mp3?filename=videogame-death-sound-43894.mp3"
+    ],
+    "newHint": [
+      "https://cdn.pixabay.com/download/audio/2025/07/25/audio_8ea981a503.mp3?filename=new-notification-026-380249.mp3"
+    ],
+    "meta": [""],
+    "oldHint": [
+      "https://cdn.pixabay.com/download/audio/2025/06/23/audio_d4db412972.mp3?filename=new-notification-011-364050.mp3"
+    ],
+    "countdownTimer": [
+      "https://cdn.pixabay.com/download/audio/2022/01/07/audio_ea449d6cea.mp3?filename=start-13691.mp3"
+    ],
+    "countdownGo": [
+      "https://cdn.pixabay.com/download/audio/2022/01/18/audio_b9ed82666f.mp3?filename=friend-request-14878.mp3"
+    ]
+  }
 }
