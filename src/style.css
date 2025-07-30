@@ -65,6 +65,11 @@ form {
   flex: 1;
 }
 
+input {
+  height: 2rem;
+  box-sizing: border-box;
+}
+
 #SlotControls {
   width: 4rem;
   height: 2rem;
@@ -76,10 +81,6 @@ form {
   width: 2rem;
   height: 2rem;
   box-sizing: border-box;
-}
-
-#slots > * {
-  height: 1.6rem;
 }
 
 @keyframes fadeOut {
@@ -124,6 +125,8 @@ h1 {
 
 input[type="submit"] {
   visibility: hidden;
+  height: 0;
+  width: 0;
 }
 
 #app {
