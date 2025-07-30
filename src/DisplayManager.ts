@@ -1,13 +1,17 @@
 import type { Alert } from "./Alert";
-import { Queue } from "./Queue";
-import { stringToHue } from "./util";
+import { Priority, Queue } from "./Queue";
+import { pickRandom, stringToHue } from "./util";
 import { images, sfx } from "../sources.json";
-import type { Item, Player } from "archipelago.js";
+import type { Hint, Item, Player } from "archipelago.js";
 
 export class DisplayManager {
   private alertQueue = new Queue<Alert>();
   private isAnimating = false;
 
+  /**
+   * A management class handling the display of alerts
+   * on the frontend
+   */
   constructor() {
     const app = document.querySelector("#app");
     if (!app) {
@@ -33,8 +37,31 @@ export class DisplayManager {
     });
   }
 
-  public push(alert: Alert) {
-    this.alertQueue.push(alert);
+  /**
+   * Adds an alert object to the queue
+   * @param alert The alert object to be added to the queue
+   * @param skipQueue If the queue should be skipped (critical priority)
+   */
+  public push(alert: Alert, skipQueue?: boolean) {
+    if (skipQueue) {
+      this.isAnimating = false;
+    }
+    this.alertQueue.push(alert, skipQueue ? Priority.CRITICAL : Priority.LOW);
+  }
+
+  /**
+   * Locks the queue for pop() operations unless of critical priority
+   * NOTE: This does not stop push() operations.
+   */
+  public lockQueue() {
+    this.alertQueue.lock();
+  }
+
+  /**
+   * Unlocks the queue for pop() operations of all priorities.
+   */
+  public unlockQueue() {
+    this.alertQueue.unlock();
   }
 
   private displayAlert() {
@@ -45,7 +72,7 @@ export class DisplayManager {
     const audio = app.querySelector("#audio") as HTMLAudioElement;
     const text = app.querySelector("#text") as HTMLHeadingElement;
 
-    const alert = this.alertQueue.pop()[0];
+    const alert = this.alertQueue.pop()?.[0];
     if (!alert) {
       return;
     }
@@ -55,6 +82,9 @@ export class DisplayManager {
 
     app.classList.remove("hide");
     app.classList.remove("hide-long");
+    app.classList.remove("hide-short");
+    img.classList.remove("grayscale");
+
     app.offsetWidth; // trigger browser to reflow because animations are dumb
 
     switch (alert.type) {
@@ -71,13 +101,13 @@ export class DisplayManager {
         const itemImages = item?.progression
           ? images.progressionItemReceived
           : images.itemReceived;
-        const image = itemImages[Math.floor(Math.random() * itemImages.length)];
+        const image = pickRandom(itemImages);
         const itemSounds = item?.progression
           ? sfx.progressionItemReceived
           : sfx.itemReceived;
-        const sound = itemSounds[Math.floor(Math.random() * itemSounds.length)];
+        const sound = pickRandom(itemSounds);
 
-        img!.src = image;
+        img!.src = image || "";
         text!.innerHTML = `<player style="color: hsl(${stringToHue(
           alert.slot
         )}, 80%, 50%);">${alert.slot}</player> received <item class="${
@@ -85,7 +115,7 @@ export class DisplayManager {
         }">${item.name}</item> from <player style="color: hsl(${stringToHue(
           item.sender.name
         )}, 80%, 50%);">${item.sender.name}</player>`;
-        audio!.src = sound;
+        audio!.src = sound || "";
 
         if (sound) audio!.play();
         app.classList.add("hide");
@@ -101,18 +131,17 @@ export class DisplayManager {
               name: "TestSender",
             },
           } as Item);
-        const trapImages = images.trapReceived;
-        const image = trapImages[Math.floor(Math.random() * trapImages.length)];
-        const trapSounds = sfx.trapReceived;
-        const sound = trapSounds[Math.floor(Math.random() * trapSounds.length)];
 
-        img!.src = image;
+        const image = pickRandom(images.trapReceived);
+        const sound = pickRandom(sfx.trapReceived);
+
+        img!.src = image || "";
         text!.innerHTML = `Received <trap>${
           trap.name
         }</item> from <player style="color: hsl(${stringToHue(
           trap.sender.name
         )}, 80%, 50%);">${trap.sender.name}</player>`;
-        audio!.src = sound;
+        audio!.src = sound || "";
 
         if (sound) audio!.play();
         app.classList.add("hide");
@@ -120,12 +149,10 @@ export class DisplayManager {
       }
       case "AlertGoal": {
         const player = (alert.payload as Player) || { name: "TestAlert" };
-        const goalImages = images.goalCompleted;
-        const image = goalImages[Math.floor(Math.random() * goalImages.length)];
-        const goalSounds = sfx.goalCompleted;
-        const sound = goalSounds[Math.floor(Math.random() * goalSounds.length)];
+        const image = pickRandom(images.goalCompleted);
+        const sound = pickRandom(sfx.goalCompleted);
 
-        img!.src = image;
+        img!.src = image || "";
         text!.innerHTML = `<player style="color: hsl(${stringToHue(
           player.name
         )}, 80%, 50%)">${
@@ -133,7 +160,7 @@ export class DisplayManager {
         }</player> has completed their <goal>goal</goal>!`;
         app.classList.add("hide-long");
 
-        audio!.src = sound;
+        audio!.src = sound || "";
 
         if (sound) audio!.play();
         break;
@@ -149,14 +176,11 @@ export class DisplayManager {
           time: 0,
           reason: "TestAlert",
         };
-        const deathImages = images.deathlink;
-        const image =
-          deathImages[Math.floor(Math.random() * deathImages.length)];
-        const deathSounds = sfx.deathlink;
-        const sound =
-          deathSounds[Math.floor(Math.random() * deathSounds.length)];
 
-        img!.src = image;
+        const image = pickRandom(images.deathlink);
+        const sound = pickRandom(sfx.deathlink);
+
+        img!.src = image || "";
         text!.innerHTML = `<player style="color: hsl(${stringToHue(
           death.source
         )}, 80%, 50%")>${
@@ -166,7 +190,7 @@ export class DisplayManager {
         }</reason>!`;
         app.classList.add("hide-long");
 
-        audio!.src = sound;
+        audio!.src = sound || "";
 
         if (sound) audio!.play();
 
@@ -176,11 +200,84 @@ export class DisplayManager {
       case "AlertMeta": {
         const slot = alert.slot;
         const info = alert.payload;
+        const image = pickRandom(images.meta);
+        const sound = pickRandom(sfx.meta);
+
+        img.src = image || "";
+
+        audio.src = sound || "";
+        if (sound) audio.play();
+
         text.innerHTML = `<player style="color: hsl(${stringToHue(
           slot
         )}, 80%, 50%)">${slot}</player>: ${info}`;
         app.classList.add("hide");
 
+        break;
+      }
+      case "AlertHint": {
+        const { slot, payload } = alert;
+        const { entrance, item, found } = (payload as Hint) || {
+          found: true,
+          item: {
+            name: "TestItem",
+            locationName: "TestLocation",
+          },
+          entrance: "TestEntrance",
+        };
+        let image = found
+          ? pickRandom(images.oldHint)
+          : pickRandom(images.newHint);
+        const sound = found ? pickRandom(sfx.oldHint) : pickRandom(sfx.newHint);
+
+        if (sound) {
+          audio.src = sound;
+          audio.play();
+        }
+        if (found && !image) {
+          // old hint and no image defined
+          // use new hint image and grayscale filter
+          image = pickRandom(images.newHint);
+          img.classList.add("grayscale");
+        }
+
+        if (image) img.src = image || "";
+
+        text.innerHTML = `<player style="color: hsl(${stringToHue(
+          slot
+        )}, 80%, 50%)">${slot}</player>'s <item class="${
+          item.progression ? "progression" : "item"
+        }">${item.name}</item> is at <location style="color: hsl(${stringToHue(
+          item.locationName
+        )}, 50%, 80%);">${item.locationName}</location>!${
+          entrance !== "Vanilla" ? " (" + entrance + ")" : ""
+        }`;
+
+        app.classList.add("hide");
+        break;
+      }
+      case "AlertCountdown": {
+        const timer = alert.payload as number;
+        const goTime = timer === 0;
+        text.innerHTML = `<timer style="color: hsl(${
+          timer * (360 / 10)
+        }, 80%, 50%);">${goTime ? "GO" : timer}</timer>`;
+
+        const image = goTime ? images.countdownGo : images.countdownTimer;
+        img.src = pickRandom(image) || "";
+
+        const sound = goTime
+          ? pickRandom(sfx.countdownGo)
+          : pickRandom(sfx.countdownTimer);
+
+        audio.src = sound || "";
+
+        if (sound) {
+          audio.play();
+        }
+
+        app.classList.add("hide-short");
+        timeout = 800;
         break;
       }
       default: {

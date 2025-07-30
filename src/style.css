@@ -27,9 +27,19 @@
   animation: fadeOut 2s ease-out forwards;
 }
 
+.hide-short {
+  opacity: 1;
+  animation: fadeOut 800ms ease-out forwards;
+}
+
 .hide-long {
   opacity: 1;
   animation: fadeOut 10s ease-out forwards;
+}
+
+timer {
+  font-weight: bold;
+  font-size: 6em;
 }
 
 img {
@@ -65,6 +75,11 @@ form {
   flex: 1;
 }
 
+input {
+  height: 2rem;
+  box-sizing: border-box;
+}
+
 #SlotControls {
   width: 4rem;
   height: 2rem;
@@ -78,8 +93,8 @@ form {
   box-sizing: border-box;
 }
 
-#slots > * {
-  height: 1.6rem;
+.grayscale {
+  filter: saturate(0%);
 }
 
 @keyframes fadeOut {
@@ -124,6 +139,8 @@ h1 {
 
 input[type="submit"] {
   visibility: hidden;
+  height: 0;
+  width: 0;
 }
 
 #app {

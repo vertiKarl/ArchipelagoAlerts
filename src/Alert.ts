@@ -3,7 +3,9 @@ export type AlertType =
   | "AlertItem"
   | "AlertTrap"
   | "AlertGoal"
-  | "AlertDeath";
+  | "AlertDeath"
+  | "AlertHint"
+  | "AlertCountdown";
 
 export interface Alert {
   slot: string;
