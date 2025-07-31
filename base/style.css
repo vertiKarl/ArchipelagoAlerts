@@ -161,7 +161,8 @@ h1 {
   line-height: 1.5;
 }
 
-input[type="submit"] {
+input[type="submit"],
+#submit {
   visibility: hidden;
   height: 0;
   width: 0;
