@@ -27,7 +27,7 @@ This is needed to customize the alerts. (e.g. changing sounds, images or even ch
 ### Running
 
 Use local test server: `yarn dev`  
-Build: `yarn build`
+Build: `yarn build`  
 Start/Serve: `yarn preview`
 
 ### Customizing
