@@ -1,0 +1,18 @@
+{
+  "alerts": {
+    "itemReceived": "{{receiver}} hat {{item}} von {{sender}} erhalten!",
+    "trapReceived": "{{receiver}} hat {{trap}} von {{sender}} erhalten!",
+    "goalReceived": "{{sender}} hat das <goal>Ziel</goal> erreicht!",
+    "deathReceived": "{{victim}} <death>starb</death> aufgrund von {{reason}}!",
+    "hintReceived": "{{receiver}}'s {{item}} ist bei {{location}}!",
+    "countdownGO": "LOS",
+    "connection": {
+      "success": "{{slot}}: Erfolgreich mit Archipelago verbunden!",
+      "failed": "{{slot}}: Verbindung mit Archipelago nicht möglich!",
+      "lost": "{{slot}}: Verbindung zu Archipelago verloren!"
+    }
+  },
+  "errors": {
+    "eventNotImplemented": "Event {{type}} nicht implementiert!"
+  }
+}

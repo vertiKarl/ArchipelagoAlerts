@@ -1,13 +1,44 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="https://github.com/ArchipelagoMW.png" />
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="https://github.com/ArchipelagoMW.png"
+    />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Archipelago Alerts</title>
+    <title>Archipelago Alerts - Config</title>
   </head>
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.ts"></script>
+    <div id="app">
+      <h1>Connect to Archipelago</h1>
+      <form id="apsettings" autocomplete="on">
+        <input placeholder="Host" name="host" value="archipelago.gg" />
+        <input
+          placeholder="Port"
+          name="port"
+          type="number"
+          min="20000"
+          max="65535"
+        />
+        <div id="SlotContainer">
+          <div id="slots">
+            <input placeholder="Slot" />
+          </div>
+          <div id="SlotControls">
+            <button type="button" id="addSlot">+</button>
+            <button type="button" id="removeSlot">-</button>
+          </div>
+        </div>
+        <input name="password" placeholder="Password (optional)" />
+        <div id="languages">
+          <label for="lang">Language:</label>
+          <select name="lang" id="lang"></select>
+        </div>
+        <button type="submit" />
+      </form>
+    </div>
+    <script type="module" src="/base/main.ts"></script>
   </body>
 </html>
