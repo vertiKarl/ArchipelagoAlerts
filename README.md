@@ -9,7 +9,7 @@ Customization is planned but is currently limited to local installs.
 
 ## To setup in obs
 
-1. Visit `https://vertikarl.github.io/ArchipelagoAlerts` and enter your login information for archipelago.
+1. Visit https://vertikarl.github.io/ArchipelagoAlerts and enter your login information for archipelago.
 2. Add the generated URL as a browser source to obs. (you will be redirected)
 
 ## To setup locally
@@ -34,5 +34,4 @@ When building use your favorite static site server to host the files!
 ### Customizing
 
 - To change sounds or images checkout /sources.json!
-- Alert text can be found in src/DisplayManager.ts
-  (Might add localization support at a later point in time moving text to a seperate file)
+- Text can be found in /public/lang/[id].json, PRs for more translations are always welcome!
