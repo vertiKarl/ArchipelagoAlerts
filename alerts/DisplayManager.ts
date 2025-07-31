@@ -25,17 +25,14 @@ export class DisplayManager {
       );
     }
 
-    const img = document.createElement("img");
-    img.id = "visual";
-    app.appendChild(img);
-
-    const h1 = document.createElement("h1");
-    h1.id = "text";
-    app.appendChild(h1);
-
-    const audio = document.createElement("audio");
-    audio.id = "audio";
-    app.appendChild(audio);
+    const img = app.querySelector("#visual");
+    const h1 = app.querySelector("#text");
+    const audio = app.querySelector("#audio");
+    if (!img || !h1 || !audio) {
+      throw new Error(
+        "DisplayManager: Initialization failed, html elements went missing!"
+      );
+    }
 
     this.alertQueue.addEventListener("PushFrame", () => {
       this.displayAlert();
