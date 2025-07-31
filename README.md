@@ -28,8 +28,7 @@ This is needed to customize the alerts. (e.g. changing sounds, images or even ch
 
 Use local test server: `yarn dev`  
 Build: `yarn build`
-
-When building use your favorite static site server to host the files!
+Start/Serve: `yarn preview`
 
 ### Customizing
 
