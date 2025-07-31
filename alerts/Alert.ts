@@ -1,5 +1,8 @@
+export type AlertConnectionStatus = "success" | "failed" | "lost";
+
 export type AlertType =
   | "AlertMeta"
+  | "AlertConnection"
   | "AlertItem"
   | "AlertTrap"
   | "AlertGoal"

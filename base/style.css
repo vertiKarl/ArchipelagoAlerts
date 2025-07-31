@@ -37,6 +37,29 @@
   animation: fadeOut 10s ease-out forwards;
 }
 
+#languages {
+  height: 2rem;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  background-color: rgb(43, 42, 51);
+  border: 1px solid gray;
+  border-radius: 0.1rem;
+  color: #8f8f95;
+}
+
+#languages > label {
+  margin-top: 0.1rem;
+  margin-left: 0.2rem;
+}
+
+#lang {
+  flex: 1;
+  padding: 0;
+  padding-left: 0.5rem;
+  margin-left: 0.51rem;
+}
+
 timer {
   font-weight: bold;
   font-size: 6em;
@@ -84,6 +107,7 @@ input {
   width: 4rem;
   height: 2rem;
   align-self: flex-end;
+  display: flex;
 }
 
 #SlotControls > * {

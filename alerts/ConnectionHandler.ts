@@ -45,6 +45,14 @@ export class ConnectionHandler {
         });
         this.clients.set(slot, client);
       } catch (err) {
+        const connectionFailedAlert: Alert = {
+          slot: slot,
+          type: "AlertConnection",
+          payload: {
+            code: "failed",
+          },
+        };
+        this.registerAlert(connectionFailedAlert);
         console.error(err);
       }
     }
@@ -135,12 +143,24 @@ export class ConnectionHandler {
         console.log("Logged in as", client.name);
         const connectedAlert: Alert = {
           slot: client.name,
-          type: "AlertMeta",
-          payload: "Successfully connected to archipelago!",
+          type: "AlertConnection",
+          payload: {
+            code: "success",
+          },
         };
 
         this.registerAlert(connectedAlert);
       }, 200);
+    });
+    client.socket.on("disconnected", () => {
+      const disconnectedAlert: Alert = {
+        slot: client.name,
+        type: "AlertConnection",
+        payload: {
+          code: "lost",
+        },
+      };
+      this.registerAlert(disconnectedAlert);
     });
   }
 

@@ -1,8 +1,13 @@
-import type { Alert } from "./Alert";
+import type { Alert, AlertConnectionStatus } from "./Alert";
 import { Priority, Queue } from "./Queue";
 import { pickRandom, stringToHue } from "./util";
 import { images, sfx } from "../sources.json";
 import type { Hint, Item, Player } from "archipelago.js";
+import i18next from "i18next";
+import i18nextLanguageDetector from "i18next-browser-languagedetector";
+import i18nextHttpBackend, {
+  type HttpBackendOptions,
+} from "i18next-http-backend";
 
 export class DisplayManager {
   private alertQueue = new Queue<Alert>();
@@ -35,6 +40,36 @@ export class DisplayManager {
     this.alertQueue.addEventListener("PushFrame", () => {
       this.displayAlert();
     });
+
+    const urlParams = new URLSearchParams(window.location.search);
+
+    console.log("Initializing with language:", urlParams.get("lang"));
+
+    this.initTranslator(urlParams.get("lang") || undefined);
+  }
+
+  private async initTranslator(lang?: string) {
+    await i18next
+      .use(i18nextLanguageDetector)
+      .use(i18nextHttpBackend)
+      .init<HttpBackendOptions>({
+        debug: false, // @todo enable when run in dev mode
+        fallbackLng: "en",
+        lng: lang,
+        supportedLngs: ["en", "de"],
+        ns: ["alerts"],
+        defaultNS: "alerts",
+        load: "languageOnly",
+        nonExplicitSupportedLngs: true,
+        interpolation: {
+          escapeValue: false,
+        },
+        backend: {
+          loadPath: "/ArchipelagoAlerts/lang/{{lng}}.json",
+        },
+      });
+
+    console.log("Translator initialized");
   }
 
   /**
@@ -78,7 +113,7 @@ export class DisplayManager {
     }
 
     this.isAnimating = true;
-    let timeout = 4000;
+    let timeout = 2000;
 
     app.classList.remove("hide");
     app.classList.remove("hide-long");
@@ -108,13 +143,20 @@ export class DisplayManager {
         const sound = pickRandom(itemSounds);
 
         img!.src = image || "";
-        text!.innerHTML = `<player style="color: hsl(${stringToHue(
-          alert.slot
-        )}, 80%, 50%);">${alert.slot}</player> received <item class="${
-          item.progression ? "progression" : "item"
-        }">${item.name}</item> from <player style="color: hsl(${stringToHue(
-          item.sender.name
-        )}, 80%, 50%);">${item.sender.name}</player>`;
+
+        const translatedString = i18next.t("alerts.itemReceived", {
+          sender: `<player style="color: hsl(${stringToHue(
+            item.sender.name
+          )}, 80%, 50%)">${item.sender.name}</player>`,
+          receiver: `<player style="color: hsl(${stringToHue(
+            alert.slot
+          )}, 80%, 50%);">${alert.slot}</player>`,
+          item: `<item class="${item.progression ? "progression" : "item"}">${
+            item.name
+          }</item>`,
+        });
+
+        text!.innerHTML = translatedString;
         audio!.src = sound || "";
 
         if (sound) audio!.play();
@@ -136,11 +178,17 @@ export class DisplayManager {
         const sound = pickRandom(sfx.trapReceived);
 
         img!.src = image || "";
-        text!.innerHTML = `Received <trap>${
-          trap.name
-        }</item> from <player style="color: hsl(${stringToHue(
-          trap.sender.name
-        )}, 80%, 50%);">${trap.sender.name}</player>`;
+        const translatedString = i18next.t("alerts.trapReceived", {
+          trap: `<trap>${trap.name}</trap>`,
+          sender: `<player style="color: hsl(${stringToHue(
+            trap.sender.name
+          )}, 80%, 50%);">${trap.sender.name}</player>`,
+          receiver: `<player style="color: hsl(${stringToHue(
+            alert.slot
+          )}, 80%, 50%);">${alert.slot}</player>`,
+        });
+
+        text!.innerHTML = translatedString;
         audio!.src = sound || "";
 
         if (sound) audio!.play();
@@ -153,11 +201,13 @@ export class DisplayManager {
         const sound = pickRandom(sfx.goalCompleted);
 
         img!.src = image || "";
-        text!.innerHTML = `<player style="color: hsl(${stringToHue(
-          player.name
-        )}, 80%, 50%)">${
-          player.name
-        }</player> has completed their <goal>goal</goal>!`;
+        const translatedString = i18next.t("alerts.goalReceived", {
+          sender: `<player style="color: hsl(${stringToHue(
+            player.name
+          )}, 80%, 50%)">${player.name}</player>`,
+        });
+
+        text!.innerHTML = translatedString;
         app.classList.add("hide-long");
 
         audio!.src = sound || "";
@@ -180,14 +230,15 @@ export class DisplayManager {
         const image = pickRandom(images.deathlink);
         const sound = pickRandom(sfx.deathlink);
 
+        const translatedString = i18next.t("alerts.deathReceived", {
+          victim: `<player style="color: hsl(${stringToHue(
+            death.source
+          )}, 80%, 50%")>${death.source}</player>`,
+          reason: `<reason>${death.reason}</reason>`,
+        });
+
         img!.src = image || "";
-        text!.innerHTML = `<player style="color: hsl(${stringToHue(
-          death.source
-        )}, 80%, 50%")>${
-          death.source
-        }</player> <death>died</death> because of <reason>${
-          death.reason
-        }</reason>!`;
+        text!.innerHTML = translatedString;
         app.classList.add("hide-long");
 
         audio!.src = sound || "";
@@ -195,6 +246,31 @@ export class DisplayManager {
         if (sound) audio!.play();
 
         timeout = 10000;
+        break;
+      }
+      case "AlertConnection": {
+        const { slot, payload } = alert;
+        const { code }: { code: AlertConnectionStatus } = payload;
+
+        const image = pickRandom(images.connection[code]);
+        const sound = pickRandom(sfx.connection[code]);
+
+        img.src = image || "";
+
+        audio.src = sound || "";
+        if (sound) audio.play();
+
+        const translatedString = i18next.t(`alerts.connection.${code}`, {
+          slot: `<player style="color: hsl(${stringToHue(slot)}, 80%, 50%")>${
+            alert.slot
+          }</player>`,
+        });
+
+        text.innerHTML = translatedString;
+        app.classList.add(code === "success" ? "hide-short" : "hide");
+
+        timeout = code === "success" ? 2000 : 800;
+
         break;
       }
       case "AlertMeta": {
@@ -243,15 +319,21 @@ export class DisplayManager {
 
         if (image) img.src = image || "";
 
-        text.innerHTML = `<player style="color: hsl(${stringToHue(
-          slot
-        )}, 80%, 50%)">${slot}</player>'s <item class="${
-          item.progression ? "progression" : "item"
-        }">${item.name}</item> is at <location style="color: hsl(${stringToHue(
-          item.locationName
-        )}, 50%, 80%);">${item.locationName}</location>!${
-          entrance !== "Vanilla" ? " (" + entrance + ")" : ""
-        }`;
+        let translatedString = i18next.t("alerts.hintReceived", {
+          receiver: `<player style="color: hsl(${stringToHue(
+            slot
+          )}, 80%, 50%)">${slot}</player>`,
+          item: `<item class="${item.progression ? "progression" : "item"}">${
+            item.name
+          }</item>`,
+          location: `<location style="color: hsl(${stringToHue(
+            item.locationName
+          )}, 50%, 80%);">${item.locationName}</location>`,
+        });
+
+        translatedString += entrance !== "Vanilla" ? " (" + entrance + ")" : "";
+
+        text.innerHTML = translatedString;
 
         app.classList.add("hide");
         break;
@@ -259,9 +341,12 @@ export class DisplayManager {
       case "AlertCountdown": {
         const timer = alert.payload as number;
         const goTime = timer === 0;
+
+        const goString = i18next.t("alerts.countdownGO");
+
         text.innerHTML = `<timer style="color: hsl(${
           timer * (360 / 10)
-        }, 80%, 50%);">${goTime ? "GO" : timer}</timer>`;
+        }, 80%, 50%);">${goTime ? goString : timer}</timer>`;
 
         const image = goTime ? images.countdownGo : images.countdownTimer;
         img.src = pickRandom(image) || "";
@@ -281,7 +366,10 @@ export class DisplayManager {
         break;
       }
       default: {
-        console.error("Event", alert.type, "not implemented!");
+        const translatedString = i18next.t("errors.eventNotImplemented", {
+          type: alert.type,
+        });
+        console.error(translatedString);
         break;
       }
     }
