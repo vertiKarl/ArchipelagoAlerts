@@ -53,7 +53,7 @@ export class Queue<T> extends EventTarget {
    * Checks if the queue is empty
    * @returns true if the queue is empty
    */
-  empty() {
+  isEmpty() {
     return (
       this.data[Priority.CRITICAL].length === 0 &&
       this.data[Priority.LOW].length === 0

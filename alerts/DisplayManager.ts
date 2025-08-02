@@ -34,15 +34,20 @@ export class DisplayManager {
       );
     }
 
-    this.alertQueue.addEventListener("PushFrame", () => {
-      this.displayAlert();
-    });
-
     const urlParams = new URLSearchParams(window.location.search);
 
     console.log("Initializing with language:", urlParams.get("lang"));
 
-    this.initTranslator(urlParams.get("lang") || undefined);
+    this.initTranslator(urlParams.get("lang") || undefined).then(() => {
+      // once the translator is initialized, we can begin displaying alerts
+      app.classList.remove("loader");
+
+      this.alertQueue.addEventListener("PushFrame", () => {
+        this.displayAlert();
+      });
+
+      if (!this.alertQueue.isEmpty()) this.displayAlert();
+    });
   }
 
   private async initTranslator(lang?: string) {
